@@ -1,18 +1,16 @@
 #pragma once
-#include "Typedefs.h"
-#include "Attribute.h"
-#include "HasFather.h"
-#include "DecisiveSystem.h"
 #include "Rule.h"
+#include "Attribute.h"
+#include "Typedefs.h"
+
 #include <cassert>
 
 namespace AI
 {
-	class InformativeSystem;
 	class DecisiveSystem;
 
 	class Object 
-		: public HasFather<InformativeSystem> 
+		: public HasFather<DecisiveSystem> 
 		, std::enable_shared_from_this<Object>
 	{
 	private:
@@ -20,8 +18,8 @@ namespace AI
 		int _index;
 		std::shared_ptr<Rule> _rule;
 	public:
-		Object(Array<std::string> attributes, int index, std::shared_ptr<InformativeSystem> father = nullptr);
-		Object(Object& other) = default;
+		Object(Array<std::string> attributes, int index, std::shared_ptr<DecisiveSystem> father = nullptr);
+		//Object(Object& other) = default;
 		AtributeType GetAtributeType(int index);
 
 		int GetDecision();

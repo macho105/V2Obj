@@ -120,7 +120,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DecisiveSystem.cpp" />
-    <ClCompile Include="InformativeSystem.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Rule.cpp" />
@@ -131,7 +130,6 @@
     <ClInclude Include="DecisiveSystemReader.h" />
     <ClInclude Include="HasFather.h" />
     <ClInclude Include="HasFile.h" />
-    <ClInclude Include="InformativeSystem.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Rule.h" />
     <ClInclude Include="Typedefs.h" />

@@ -130,6 +130,26 @@ void Zestaw1()
 			std::cout << ret[i] << std::endl;
 		}
 
+		auto uniques = system.GetUniqueDecisions();
+		for(auto i = 0; i < uniques.size(); i++)
+		{
+			for(auto d = 0; d < system.GetObjectAtIndex(0)->GetSize(); d++)
+			{
+				auto col = system.GetAttributesAtIndex(d);
+				AI::Array<float> toCalc;
+				for(auto x = 0; x < col.size(); x++)
+				{
+					if (col[x].GetFather()->GetDecision() == std::stoi(uniques[i]))
+						toCalc.push_back(col[x].GetAsFloat());
+
+				}
+				std::cout << "std dev for att " << d << " decision " << uniques[i] << 
+					" is: " <<calcStandardDeviation(toCalc) << "\n";
+
+
+			}
+		}
+
 		DisplayExercise("");
 	};
 
@@ -146,21 +166,20 @@ void Zestaw2()
 {
 	AI::DecisiveSystemReader reader(DECISIVE_SYSTEM_FILENAME);
 	auto system = reader.ReadDecisiveSystem();
-	auto p_sys = std::shared_ptr<AI::DecisiveSystem>(&system);
-	AI::Array<AI::Rule> rules;
-	auto test = p_sys->GetObjectAtIndex(0)->GetFather();
-	auto father = std::dynamic_pointer_cast<AI::DecisiveSystem>(p_sys->GetObjectAtIndex(0)->GetFather());
+	auto finished = [](AI::DecisiveSystem* system)
+	{
+		for (auto i = 0; i < system->GetObjectsCount(); i++)
+			if (!system->GetObjectAtIndex(i)->HasRule())
+				return false;
+		return true;
+	};
+
+
 	auto Pkt1 = [&]()
 	{
 		auto sys = system;
-		auto finished = [](AI::DecisiveSystem* system)
-		{
-			for (auto i = 0; i < system->GetObjectsCount(); i++)
-				if (!system->GetObjectAtIndex(i)->HasRule())
-					return false;
-			return true;
-		};
 		auto level = 1;
+		AI::Array<AI::Rule> rules;
 		while(!finished(&sys))
 		{
 			for(auto i = 0; i < sys.GetObjectsCount(); i++)
@@ -177,17 +196,117 @@ void Zestaw2()
 					}
 				}
 			}
+			level++;
 		}
 	};
+	auto Pkt2 = [&]()
+	{
+		auto sys = system;
+		auto diff = sys.ProduceDiffArray();
+		auto contains = [](AI::Array<int> indexes, AI::Array<int> obiekt)->bool
+		{
+			for (auto i : indexes)
+				if (std::find(std::begin(obiekt), std::end(obiekt), i) == std::end(obiekt))
+					return false;
+			return true;
+		};
+		auto colContains = [&](AI::Array<int> indexes,AI::Array2D<int> col)->bool
+		{
+			for (auto box : col)
+				if (!contains(indexes, box))
+					return false;
 
-	Pkt1();
+			return true;
+		};
+
+		auto level = 1;
+		AI::Array<AI::Attribute> ret;
+		while(!finished(&sys))
+		{
+			AI::Array<AI::Array<int>> out;
+			for(auto i = 0; i < diff.size(); i++)
+			{
+				out.clear();
+				AI::Array<AI::Array<int>> indexes = AI::Rule::comb(sys.GetObjectAtIndex(0)->GetSize(), level);
+				AI::Array<AI::Attribute> buff;
+
+				//if(colContains(indexes[i],diff[i]))
+				//{
+				//	
+				//}
+				
+
+				/*
+				for(auto arr : indexes)
+				{
+					for (auto d = 0; d < diff[i].size(); d++)
+					{
+						int good = 0;
+						for (auto el : arr)
+						{
+							for (auto sec : diff[i][d])
+								if (sec.GetIndex() == el)
+									good++;
+							if (good == arr.size())
+								continue;
+						}
+					}
+					out.push_back(arr);
+
+				}
+				
+
+				if (out.size() == sys.GetObjectAtIndex(0)->GetSize())
+					continue;
+				else
+				{
+					// Let's get indexes which didn't occur:
+					AI::Array<bool> all; all.assign(sys.GetObjectAtIndex(0)->GetSize(), false);
+					for (auto el : buff)
+						all[el.GetIndex()] = true;
+
+					
+					for(auto x = 0; x < all.size();x++)
+						if(all[x] == false)
+						{
+							ret.push_back(sys.GetObjectAtIndex(i)->At(x));
+						}
+				}
+				*/
+			}
+			level++;
+		}
+
+		return;
+	};
+	//Pkt1();
+	Pkt2();
+
+
+	auto choinka = []()
+	{
+		int width = 237, treeWidth = 1;
+		auto drawSpaces = [](int i) {while (i) { printf(" "); i--; }};
+		for (int i = 0; i < 59; i++)
+		{
+			int start = abs(treeWidth / 2 + 1);
+			start = width / 2 - start;
+			drawSpaces(start - 1);
+			for (int d = 0; d < treeWidth; d++)
+				printf("*");
+			//drawSpaces(start + treeWidth + 1);
+			printf("\n");
+			treeWidth += 2;
+		}
+	};
+	//choinka();
 	return;
 }
 
 DWORD main(int argc, char* argv[])
 {
 	Zestaw1();
-	Zestaw2();
+	//Zestaw2();
 
 	system("pause");
 	return S_OK;

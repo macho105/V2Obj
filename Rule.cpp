@@ -1,5 +1,5 @@
 #include "Rule.h"
-#include "Object.h"
+#include "DecisiveSystem.h"
 
 AI::Rule::Rule(Array<Attribute> attributes, float decision, std::shared_ptr<DecisiveSystem> system)
 	: _system(system),
@@ -21,9 +21,9 @@ bool AI::Rule::Check()
 		for(auto& el : _fragments)
 		{
 			if (system->GetObjectAtIndex(i)->At(el.GetIndex()).GetAsFloat() == el.GetAsFloat() &&
-				el.GetFather()->GetDecision() == _decision)
+				_system.GetFather()->GetObjectAtIndex(i)->GetDecision() != _decision)
 				good++;
-			if (good == this->_fragments.size())
+			if (good == _fragments.size())
 				return false;
 		}
 		good = 0;
@@ -31,23 +31,7 @@ bool AI::Rule::Check()
 	return !good;
 }
 
-static std::vector<std::vector<int>> comb(int size, int level)
-{
-	std::vector<std::vector<int>> ret;
-	std::string bitmask(level, 1); // level leading 1's
-	bitmask.resize(size, 0); // size-level trailing 0's
 
-							 // print integers and permute bitmask
-	do {
-		std::vector<int> toAdd;
-		for (auto i = 0; i < size; ++i) // [0..size-1] integers
-		{
-			if (bitmask[i]) toAdd.push_back(i);
-		}
-		ret.push_back(toAdd);
-	} while (std::prev_permutation(bitmask.begin(), bitmask.end()));
-	return ret;
-}
 AI::Array<AI::Rule> AI::Rule::GeneratePotentialRules(
 	std::shared_ptr<Object> object,
 	int level,
@@ -71,3 +55,22 @@ AI::Array<AI::Rule> AI::Rule::GeneratePotentialRules(
 	}
 	return ret;
 }
+
+std::vector<std::vector<int>> AI::Rule::comb(int size, int level)
+{
+	std::vector<std::vector<int>> ret;
+	std::string bitmask(level, 1); // level leading 1's
+	bitmask.resize(size, 0); // size-level trailing 0's
+
+							 // print integers and permute bitmask
+	do {
+		std::vector<int> toAdd;
+		for (auto i = 0; i < size; ++i) // [0..size-1] integers
+		{
+			if (bitmask[i]) toAdd.push_back(i);
+		}
+		ret.push_back(toAdd);
+	} while (std::prev_permutation(bitmask.begin(), bitmask.end()));
+	return ret;
+}
+

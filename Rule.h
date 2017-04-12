@@ -1,8 +1,13 @@
 #pragma once
-#include "DecisiveSystem.h"
+#include "HasFather.h"
+#include "Typedefs.h"
 
 namespace AI
 {
+	class DecisiveSystem;
+	class Object;
+	class Attribute;
+
 	class Rule
 	{
 		HasFather<DecisiveSystem> _system;
@@ -18,6 +23,6 @@ namespace AI
 		bool Check();
 
 		static Array<Rule> GeneratePotentialRules(std::shared_ptr<Object> object, int level, std::shared_ptr<DecisiveSystem> system = nullptr);
-
+		static std::vector<std::vector<int>> comb(int size, int level);
 	};
 }

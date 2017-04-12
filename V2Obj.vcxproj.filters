@@ -27,9 +27,6 @@
     <ClCompile Include="Object.cpp">
       <Filter>Header Files\AI</Filter>
     </ClCompile>
-    <ClCompile Include="InformativeSystem.cpp">
-      <Filter>Header Files\AI</Filter>
-    </ClCompile>
     <ClCompile Include="DecisiveSystem.cpp">
       <Filter>Header Files\AI</Filter>
     </ClCompile>
@@ -48,9 +45,6 @@
       <Filter>Header Files\AI</Filter>
     </ClInclude>
     <ClInclude Include="HasFather.h">
-      <Filter>Header Files\AI</Filter>
-    </ClInclude>
-    <ClInclude Include="InformativeSystem.h">
       <Filter>Header Files\AI</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
